@@ -37,3 +37,27 @@ function grad_f_ell_2(A::Matrix{Float64},b::Vector{Float64},x::Vector{Float64})
     return temp - A'*b
 end
 @time grad_f_ell_2(rand(2,2),rand(2),rand(2))
+
+function subdiff_ell_1(x::Vector{Float64})
+    q = zeros(length(x))
+    for i in 1:length(x)
+        if x[i] > 0
+            q[i] = 1.0
+        elseif x[i] < 0
+            q[i] = -1.0
+        else
+            q[i] = 2*rand()-1
+        end
+    end
+    return q
+end
+subdiff_ell_1(randn(10))
+
+function nonsmooth_objective(A::Matrix{Float64},
+                             b::Vector{Float64},
+                             x::Vector{Float64})
+    z = A*x - b
+    q = subdiff_ell_1(z)
+    return A'*q
+end
+nonsmooth_objective(rand(20,20),rand(20),randn(20))
