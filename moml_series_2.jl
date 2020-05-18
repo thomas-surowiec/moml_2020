@@ -19,4 +19,13 @@ function ell_lp_norm(x::Vector{Float64},p::Int64)
     end
     return elp
 end
-@time ell_lp_norm(randn(100000),2)
+ell_lp_norm(randn(1),3)
+
+function quadratic_objective(A::Matrix{Float64},
+                             b::Vector{Float64},
+                             x::Vector{Float64},
+                             p::Int64)
+    z = A*x - b
+    f = ell_lp_norm(z,p)
+    return 0.5*f^2
+end
