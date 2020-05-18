@@ -61,3 +61,37 @@ function nonsmooth_objective(A::Matrix{Float64},
     return A'*q
 end
 nonsmooth_objective(rand(20,20),rand(20),randn(20))
+
+function projection_Rn_plus(x::Vector{Float64})
+    proj = zeros(length(x))
+
+    for i in 1:length(x)
+        if x[i] >= 0
+            proj[i] = x[i]
+        else
+            proj[i] = 0.0
+        end
+    end
+
+    return proj
+end
+projection_Rn_plus(randn(10))
+
+function projection_ab(x::Vector{Float64},a::Vector{Float64},b::Vector{Float64})
+    proj = zeros(length(x))
+
+    for i in 1:length(x)
+        if x[i] >= b[i]
+            proj[i] = b[i]
+        elseif x[i] <= a[i]
+            proj[i] = a[i]
+        else
+            proj[i] = x[i]
+        end
+    end
+
+    return proj
+end
+a = -1*ones(10)
+b = ones(10)
+projection_ab(randn(10),a,b)
