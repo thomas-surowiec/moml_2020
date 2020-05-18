@@ -29,3 +29,11 @@ function quadratic_objective(A::Matrix{Float64},
     f = ell_lp_norm(z,p)
     return 0.5*f^2
 end
+quadratic_objective(rand(2,2),rand(2),rand(2),1)
+
+function grad_f_ell_2(A::Matrix{Float64},b::Vector{Float64},x::Vector{Float64})
+    temp = A*x
+    temp = A'*temp
+    return temp - A'*b
+end
+@time grad_f_ell_2(rand(2,2),rand(2),rand(2))
