@@ -75,7 +75,7 @@ function proj_sub_grad(f::Objective,
     return x_0
 end
 
-# A problem instance
+# A problem instance for ExampleOpt-1.jl
 A = randn(50,50)
 b = rand(50)
 c = -ones(50)
@@ -84,6 +84,6 @@ d = ones(50)
 P_X = Projection(pa_projection_ab(c,d))
 f   = Objective(pa_quadratic_objective(A,b,2),pa_grad_f_ell_2(A,b))
 g_t = StepSize(A -> gamma_t(A),1/opnorm(A'*A, 2))
-
 x_0 = rand(50)
-@time x_sol = proj_sub_grad(f,P_X,g_t,100,x_0,"fixed")
+
+x_sol = proj_sub_grad(f,P_X,g_t,100,x_0,"fixed")
