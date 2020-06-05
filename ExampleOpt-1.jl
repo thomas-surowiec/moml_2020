@@ -32,8 +32,8 @@ end
 
 # Another possibility for the Projection type. Here, we fix the bounds
 # so that P_X.Proj only takes the argument x.
-P_X = Projection(pa_projection_ab(-1*ones(10),ones(10)))
-P_X.Proj(randn(10))
+# P_X = Projection(pa_projection_ab(-1*ones(10),ones(10)))
+# P_X.Proj(randn(10))
 ################################################################################
 
 ################################################################################
@@ -102,12 +102,12 @@ function pa_grad_f_ell_2(A::Matrix{Float64},b::Vector{Float64})
 end
 
 # Another possibility for the Objective type
-A = rand(2,2)
-b = rand(2)
-p = 2
-f = Objective(pa_quadratic_objective(A,b,p),pa_grad_f_ell_2(A,b))
-f.Obj(rand(2))
-f.dObj(rand(2))
+# A = rand(2,2)
+# b = rand(2)
+# p = 2
+# f = Objective(pa_quadratic_objective(A,b,p),pa_grad_f_ell_2(A,b))
+# f.Obj(rand(2))
+# f.dObj(rand(2))
 ################################################################################
 
 ################################################################################
@@ -130,6 +130,6 @@ f.dObj(rand(2))
 function gamma_t(A::Matrix{Float64})
     return opnorm(A'*A, 2)
 end
-g_t = StepSize(A -> gamma_t(A),1/opnorm(A'*A, 2))
-g_t.StepRule(A)
-g_t.FixedStep
+# g_t = StepSize(A -> gamma_t(A),1/opnorm(A'*A, 2))
+# g_t.StepRule(A)
+# g_t.FixedStep

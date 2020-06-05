@@ -32,8 +32,8 @@ end
 
 # Another possibility for the Projection type. Here, we fix the bounds
 # so that P_X.Proj only takes the argument x.
-P_X = Projection(pa_projection_ab(-1*ones(10),ones(10)))
-P_X.Proj(randn(10))
+# P_X = Projection(pa_projection_ab(-1*ones(10),ones(10)))
+# P_X.Proj(randn(10))
 ################################################################################
 
 ################################################################################
@@ -62,9 +62,7 @@ function ell_lp_norm(x::Vector{Float64},p::Int64)
     return elp
 end
 
-function ns_objective(A::Matrix{Float64},
-                      b::Vector{Float64},
-                      x::Vector{Float64}
+function ns_objective(A::Matrix{Float64},b::Vector{Float64},x::Vector{Float64})
 
     z = A*x - b
     return ell_lp_norm(z,1)
@@ -85,4 +83,60 @@ function subdiff_ell_1(x::Vector{Float64})
 
     return q
 end
+
+function subgrad_ns_obj(A::Matrix{Float64},b::Vector{Float64},x::Vector{Float64})
+    z = A*x - b
+    q = subdiff_ell_1(z)
+
+    return A'*q
+end
 ################################################################################
+
+################################################################################
+# One possibility for the Objective type
+# f = Objective(ns_objective,subgrad_ns_obj)
+# f.Obj(rand(2,2),rand(2),rand(2))
+# f.dObj(rand(2,2),rand(2),rand(2))
+
+# This is a partial function application of ns_objective
+function pa_ns_objective(A::Matrix{Float64},b::Vector{Float64},p::Int64)
+
+    pa_ns_obj(x::Vector{Float64}) = ns_objective(A,b,x)
+
+    return pa_ns_obj
+end
+
+# This is a partial function application of subgrad_ns_obj
+function pa_subgrad_ns_obj(A::Matrix{Float64},b::Vector{Float64})
+
+    pa_d_ns_obj(x::Vector{Float64}) = subgrad_ns_obj(A,b,x)
+
+    return pa_d_ns_obj
+end
+
+# Another possibility for the Objective type
+# A = rand(2,2)
+# b = rand(2)
+# p = 2
+# f = Objective(pa_ns_objective(A,b,p),pa_subgrad_ns_obj(A,b))
+# f.Obj(rand(2))
+# f.dObj(rand(2))
+################################################################################
+
+################################################################################
+# DEFINE a stepsize rule
+################################################################################
+# Since f is a general nonsmooth function, we cannot expect fixed step sizes
+# to generate a rapidly convergent sequence.
+
+# We need to estimate
+#   M: Lipschitz constant of f
+# D_X: Diameter of the set
+
+################################################################################
+function gamma_t(A::Matrix{Float64})
+    return opnorm(A'*A, 2)
+end
+# g_t = StepSize(A -> gamma_t(A),1/opnorm(A'*A, 2))
+# g_t.StepRule(A)
+# g_t.FixedStep
