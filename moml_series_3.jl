@@ -3,6 +3,7 @@
 # The code is written in a way that it most closely mirrors
 # the discussion in the text.
 #
+using LinearAlgebra
 
 ################################################################################
 # DEFINE structs: We define three mutable structures that comprise
@@ -133,4 +134,22 @@ p = 2
 f = Objective(pa_quadratic_objective(A,b,p),pa_grad_f_ell_2(A,b))
 f.Obj(rand(2))
 f.dObj(rand(2))
+################################################################################
+
+################################################################################
+# DEFINE a stepsize rule
+################################################################################
+# Since f is smooth and convex with a Lipschitz gradient, we can pick a fixed
+# step size, if we can determine or estimate the Lipschitz constant at least
+# over the feasible set X
+#
+#
+# Here, grad f(x) = A^T A x - A^T b. On X we have the bound
+# grad f(x) - grad f(y) = A^T A (x - y). Taking the Euclidean norm of both sides
+# and bounding from above using the Cauchy-Schwarz inequality we have
+# | grad f(x) - grad f(y)| \le ||A^T A|| ||x - y||
+#
+# Since we only need it once, we compute the Lipschitz constant using
+# the built-in Julia function for the induced matrix norm: opnorm(A'*A, 2)
+# You need the LinearAlgebra package for this.
 ################################################################################
