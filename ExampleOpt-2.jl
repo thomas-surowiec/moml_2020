@@ -99,7 +99,7 @@ end
 # f.dObj(rand(2,2),rand(2),rand(2))
 
 # This is a partial function application of ns_objective
-function pa_ns_objective(A::Matrix{Float64},b::Vector{Float64},p::Int64)
+function pa_ns_objective(A::Matrix{Float64},b::Vector{Float64})
 
     pa_ns_obj(x::Vector{Float64}) = ns_objective(A,b,x)
 
@@ -133,10 +133,39 @@ end
 #   M: Lipschitz constant of f
 # D_X: Diameter of the set
 
+# For M we have
+# | f(x) - f(y)| \le ||Ax - b - (Ay - b)||_{1}
+#                 =  ||A(x - y)||_{1}
+#                \le ||A||_{op,1}||x - y||_{1}
+#                \le \|A||_{op,1} \sqrt{n} ||x - y||_{2}
+#
+# This yields M = opnorm(A, 1) * sqrt(size(A,2)).
+
+# For D_X we have for any x,y \in X that
+# ||x - y||^2_2 =    ||x||^2_2 + 2 x^T y + ||y||^2_2
+#             \le  2||x||^2_2 + 2 ||y||^2_2
+#             \le  4 n ||d||^2_{\inf}
+#
+# This yields an upper bound for D_X
+# D_X^2 :=  2 sqrt(size(A,2)) norm(d, Inf)^2
+
+# The optimal step size is given by
+# gamma_t = sqrt(2 * D_X^2/(k M^2)) where t = 1,...,k
 ################################################################################
-function gamma_t(A::Matrix{Float64})
-    return opnorm(A'*A, 2)
+function gamma_t(A::Matrix{Float64},upper_bound::Vector{Float64},k::Int64)
+
+        M  = opnorm(A, 1)*sqrt(size(A,2))
+     D_X_2 = 2*sqrt(size(A,2))*norm(upper_bound, Inf)^2
+
+    return sqrt((2*D_X_2)/(k * M^2))
 end
-# g_t = StepSize(A -> gamma_t(A),1/opnorm(A'*A, 2))
-# g_t.StepRule(A)
+
+function pa_gamma_t(A::Matrix{Float64},upper_bound::Vector{Float64})
+
+    pa_g_t(k::Int64) = gamma_t(A,upper_bound,k)
+
+    return pa_g_t
+end
+# g_t = StepSize(gamma_t,0.1)
+# g_t.StepRule(rand(50,50),rand(50),10)
 # g_t.FixedStep
