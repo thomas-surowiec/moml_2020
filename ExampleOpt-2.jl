@@ -144,7 +144,7 @@ end
 # For D_X we have for any x,y \in X that
 # ||x - y||^2_2 =    ||x||^2_2 + 2 x^T y + ||y||^2_2
 #             \le  2||x||^2_2 + 2 ||y||^2_2
-#             \le  4 n ||d||^2_{\inf}
+#             \le  4 n ||d||^2_{\inf} <<<<<<<<<<<<< ERROR! Needs to include c
 #
 # This yields an upper bound for D_X
 # D_X^2 :=  2 sqrt(size(A,2)) norm(d, Inf)^2

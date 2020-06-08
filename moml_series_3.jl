@@ -5,8 +5,8 @@
 #
 using LinearAlgebra
 using Plots
-include("ExampleOpt-1.jl")
-# include("ExampleOpt-2.jl")
+# include("ExampleOpt-1.jl")
+include("ExampleOpt-2.jl")
 
 ################################################################################
 # DEFINE structs: We define three mutable structures that comprise
@@ -104,7 +104,7 @@ plot(f_vec)
 ################################################################################
 # A problem instance for ExampleOpt-2.jl
 A = randn(50,50)
-b = rand(50) # test accuracy with b = zeros(50)
+b = 0*rand(50) # test accuracy with b = zeros(50)
 c = -ones(50)
 d = ones(50)
 
@@ -120,6 +120,8 @@ plot(f_vec, xaxis=:log, yaxis=:log, leg=false)
 
 # plot
 plot(f_vec, leg=false)
+
+plot(x_sol)
 ################################################################################
 
 ################################################################################
