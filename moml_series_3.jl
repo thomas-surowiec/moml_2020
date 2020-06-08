@@ -5,8 +5,8 @@
 #
 using LinearAlgebra
 using Plots
-# include("ExampleOpt-1.jl")
-include("ExampleOpt-2.jl")
+include("ExampleOpt-1.jl")
+# include("ExampleOpt-2.jl")
 
 ################################################################################
 # DEFINE structs: We define three mutable structures that comprise
@@ -123,7 +123,7 @@ plot(f_vec, leg=false)
 
 ################################################################################
 # This is a work in progress intended to illustrate the theoretical
-# behavior more clearly 
+# behavior more clearly
 #
 # function aggregate(f::Objective,Proj::Projection,g_t::StepSize,k::Int64,
 #                    x_0::Vector{Float64},step::String)
