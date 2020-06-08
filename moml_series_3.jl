@@ -32,7 +32,7 @@ end
 # main function: A projected subgradient algorithm
 ################################################################################
 function proj_sub_grad(f::Objective,
-                       Proj::Projection,
+                       P_X::Projection,
                        g_t::StepSize,
                        maxit::Int64,
                        x_0::Vector{Float64},
@@ -41,6 +41,7 @@ function proj_sub_grad(f::Objective,
     it = 0
     f_vec    = zeros(maxit)
     f_vec[1] = f.Obj(x_0)
+    gam_t    = g_t.StepRule(maxit)
 
     if step == "fixed"
         while it < maxit
@@ -60,7 +61,7 @@ function proj_sub_grad(f::Objective,
         end
     else
         while it < maxit
-            x_1 = P_X.Proj(x_0 - g_t.StepRule(maxit)*f.dObj(x_0))
+            x_1 = P_X.Proj(x_0 - gam_t*f.dObj(x_0))
 
             # Behavior of iterates
             # Progress:
