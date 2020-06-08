@@ -121,7 +121,7 @@ end
 # Here, grad f(x) = A^T A x - A^T b. On X we have the bound
 # grad f(x) - grad f(y) = A^T A (x - y). Taking the Euclidean norm of both sides
 # and bounding from above using the Cauchy-Schwarz inequality we have
-# | grad f(x) - grad f(y)| \le ||A^T A|| ||x - y||
+# || grad f(x) - grad f(y)|| \le ||A^T A||_{op,2} ||x - y||_{2}
 #
 # Since we only need it once, we compute the Lipschitz constant using
 # the built-in Julia function for the induced matrix norm: opnorm(A'*A, 2)

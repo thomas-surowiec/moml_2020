@@ -41,7 +41,7 @@ function proj_sub_grad(f::Objective,
     it = 0
     f_vec    = zeros(maxit)
     f_vec[1] = f.Obj(x_0)
-    gam_t    = g_t.StepRule(maxit)
+    # gam_t    = g_t.StepRule(maxit)
 
     if step == "fixed"
         while it < maxit
@@ -51,7 +51,7 @@ function proj_sub_grad(f::Objective,
             # Progress:
             # println("||x_0 - x_1|| = ", norm(x_0-x_1))
             # Optimality:
-            # println("x - Proj_X(x - grad f(x)) = ", norm(x_1 - P_X.Proj(x_1 - f.dObj(x_1))))
+            println("x - Proj_X(x - grad f(x)) = ", norm(x_1 - P_X.Proj(x_1 - f.dObj(x_1))))
             # Objective Function:
             # println("f(x_1) - f(x_0) = ", f.Obj(x_1) - f.Obj(x_0))
 
@@ -61,7 +61,7 @@ function proj_sub_grad(f::Objective,
         end
     else
         while it < maxit
-            x_1 = P_X.Proj(x_0 - gam_t*f.dObj(x_0))
+            x_1 = P_X.Proj(x_0 - g_t.StepRule(maxit)*f.dObj(x_0))
 
             # Behavior of iterates
             # Progress:
@@ -92,7 +92,7 @@ f   = Objective(pa_quadratic_objective(A,b,2),pa_grad_f_ell_2(A,b))
 g_t = StepSize(A -> gamma_t(A),1/opnorm(A'*A, 2))
 x_0 = rand(50)
 
-x_sol, f_vec = proj_sub_grad(f,P_X,g_t,100,x_0,"fixed")
+x_sol, f_vec = proj_sub_grad(f,P_X,g_t,10000,x_0,"fixed")
 
 # log-log plot
 plot(f_vec, xaxis=:log, yaxis=:log)
@@ -113,7 +113,7 @@ f   = Objective(pa_ns_objective(A,b),pa_subgrad_ns_obj(A,b))
 g_t = StepSize(pa_gamma_t(A,d),0.1)
 x_0 = rand(50)
 
-x_sol, f_vec = proj_sub_grad(f,P_X,g_t,1000,x_0,"var")
+x_sol, f_vec = proj_sub_grad(f,P_X,g_t,10000,x_0,"var")
 
 # log-log plot
 plot(f_vec, xaxis=:log, yaxis=:log, leg=false)
