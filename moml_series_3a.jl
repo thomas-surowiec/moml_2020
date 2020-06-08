@@ -78,8 +78,8 @@ end
 
 ################################################################################
 # A problem instance for ExampleOpt-1.jl
-A      = randn(5000,5000)
-b      = rand(5000)
+A      = randn(500,500)
+b      = rand(500)
 lambda = 1/opnorm(A'*A, 2) # According to the theory, we need to pick lambda = 1/L
 
 P_X = Proximal(pa_prox_ell_one(lambda))
