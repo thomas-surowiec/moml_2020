@@ -5,8 +5,9 @@
 #
 using LinearAlgebra
 using Plots
-# include("ExampleOpt-1.jl")
-include("ExampleOpt-2.jl")
+
+include("moml_series_3_ex-1.jl")
+include("moml_series_3_ex-2.jl")
 
 ################################################################################
 # DEFINE structs: We define three mutable structures that comprise

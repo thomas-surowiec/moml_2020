@@ -6,7 +6,7 @@
 using LinearAlgebra
 using Plots
 
-include("ExampleOpt-3.jl")
+include("moml_series_3_ex-3.jl")
 
 ################################################################################
 # DEFINE structs: We define three mutable structures that comprise
