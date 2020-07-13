@@ -28,8 +28,8 @@ cd(dirname(@__FILE__()))
 using LinearAlgebra
 using Plots
 
-include("moml_series_4_ex-1.jl")
-# include("moml_series_4_ex-2.jl")
+# include("moml_series_4_ex-1.jl")
+include("moml_series_4_ex-2.jl")
 
 ################################################################################
 # Constructors for special types
@@ -90,7 +90,7 @@ dim_x = 100
 
 # Construct oracle
 G_t = Oracle(stoch_grad,[1.0])
-@time G_t(rand(dim_x))
+G_t(rand(dim_x))
 
 # Construct prox-operator
 c    = -ones(dim_x)
@@ -101,7 +101,7 @@ Proj = Proximal(pa_projection_ab(c,d))
 g_t = StepSize(0.1,pa_gamma_t(10.0))
 
 # Run example
-x_0, err_vec = prox_sub_grad(G_t,Proj,g_t,1000,zeros(dim_x))
+x_0, err_vec = prox_sub_grad(G_t,Proj,g_t,10000,zeros(dim_x))
 
 # Plot behavior of consecutive iterates
 ep  = plot(err_vec,lw = 2,label=false, yaxis = :log)

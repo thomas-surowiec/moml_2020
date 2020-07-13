@@ -74,7 +74,7 @@ G_t(rand(dim_x))
 g_t = StepSize(0.1,pa_gamma_t(1.0))
 
 # Run example
-x_0, err_vec = entrop_sub_grad(G_t,g_t,500,x_sv)
+x_0, err_vec = entrop_sub_grad(G_t,g_t,2,x_sv)
 
 # Plot behavior of consecutive iterates
 ep  = plot(err_vec,lw = 2,label=false, yaxis = :log)
