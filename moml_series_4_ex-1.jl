@@ -2,8 +2,6 @@
 ################################################################################
 # Example
 ################################################################################
-dim_x = 100
-
 function stoch_grad(A::Diagonal{Float64,Array{Float64,1}},
                     b::Vector{Float64},
                     alpha::Float64,
@@ -12,9 +10,6 @@ function stoch_grad(A::Diagonal{Float64,Array{Float64,1}},
     g = A'*g + alpha*x
     return g
 end
-
-G_t = Oracle(stoch_grad,[1.0])
-G_t(rand(dim_x))
 
 function projection_ab(x::Vector{Float64},a::Vector{Float64},b::Vector{Float64})
     proj = zeros(length(x))
@@ -38,10 +33,6 @@ function pa_projection_ab(a::Vector{Float64},b::Vector{Float64})
     return pa_proj_ab
 end
 
-c    = -ones(dim_x)
-d    = ones(dim_x)
-Proj = Proximal(pa_projection_ab(c,d))
-
 function gamma_t(k::Float64,i::Int64)
     return k/i
 end
@@ -50,6 +41,4 @@ function pa_gamma_t(k::Float64)
     pgt(i::Int64) = gamma_t(k,i)
     return pgt
 end
-
-g_t = StepSize(0.1,pa_gamma_t(10.0))
 ################################################################################
