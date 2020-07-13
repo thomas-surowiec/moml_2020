@@ -78,16 +78,16 @@ end
 
 ################################################################################
 # A problem instance for ExampleOpt-1.jl
-A      = randn(500,500)
-b      = rand(500)
+A      = randn(5,5)
+b      = rand(5)
 lambda = 1/opnorm(A'*A, 2) # According to the theory, we need to pick lambda = 1/L
 
 P_X = Proximal(pa_prox_ell_one(lambda))
 f   = Objective(pa_quadratic_objective(A,b),pa_grad_f_ell_2(A,b))
 g_t = StepSize(A -> gamma_t(A),1/opnorm(A'*A, 2))
-x_0 = rand(50)
+x_0 = rand(5)
 
-x_sol, f_vec = prox_sub_grad(f,P_X,g_t,10,x_0,"fixed")
+@time x_sol, f_vec = prox_sub_grad(f,P_X,g_t,10000,x_0,"fixed")
 
 # log-log plot
 plot(f_vec, xaxis=:log, yaxis=:log)
