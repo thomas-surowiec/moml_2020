@@ -1,44 +1,13 @@
-#=
-moml_series_4
-
-A stochastic mirror descent algorithm
-
-In its most general form, we assume to have a:
-- prox-function
-- stochastic oracle
-- step size rule
-- prox-operator
-- start value x_0
-- stopping criterion
-in order to generate a sequence x_k via stochastic mirror descent
-
-This would require several types, e.g.:
-- mutable struct Objective
-- mutable struct FeasibleSet
-- mutable struct StochasticOracle
-- mutable struct Proximal
-- mutable struct StepSize
-
-This might not be able to make use of known explicit formulae and be less
-efficient. For specific examples, we can define less types and have an even
-simpler algorithm. This requires a bit of pen and paper work first.
-=#
-
 cd(dirname(@__FILE__()))
 using LinearAlgebra
 using Plots
 
-include("moml_series_4_ex-1.jl")
-# include("moml_series_4_ex-2.jl")
+include("moml_series_4_ex-3.jl")
+# include("moml_series_4_ex-4.jl")
 
 ################################################################################
 # Constructors for special types
 ################################################################################
-# Proximal type for prox-operator
-mutable struct Proximal
-    prox::Function
-end
-
 # Stochastic Oracle: A callable type
 mutable struct Oracle
     stoch_grad::Function
@@ -58,18 +27,26 @@ end
 ################################################################################
 
 ################################################################################
-# main function: A proximal subgradient algorithm
+# main function: A proximal subgradient algorithm (entropic dgf)
 ################################################################################
-function prox_sub_grad(G::Oracle,
-                       P_X::Proximal,
-                       g_t::StepSize,
-                       maxit::Int64,
-                       x_0::Vector{Float64})
+function entrop_sub_grad(G::Oracle,
+                         g_t::StepSize,
+                         maxit::Int64,
+                         x_0::Vector{Float64})
 
     it = 0
     err_vec = zeros(maxit)
+    x_1 = zeros(length(x_0))
     while it < maxit
-        x_1 = P_X.prox(x_0 - g_t.step_rule(it)*G(x_0))
+        norm_const = 0.0
+        for k in 1:length(x_0)
+            norm_const += x_0[k]*exp(-g_t.step_rule(it+1)*G(x_0)[k])
+        end
+
+        for i in 1:length(x_0)
+            x_1[i] = x_0[i]*exp(-g_t.step_rule(it+1)*G(x_0)[i])/norm_const
+        end
+        # println(norm(x_1))
 
         err_vec[it+1] = norm(x_0 - x_1)
         println(norm(x_0 - x_1))
@@ -87,25 +64,23 @@ end
 ################################################################################
 # Select size of problem
 dim_x = 100
+x_sv  = ones(dim_x)/dim_x # feasible x
 
 # Construct oracle
-G_t = Oracle(stoch_grad,[1.0])
-@time G_t(rand(dim_x))
+G_t = Oracle(stoch_grad,[0.1])
+G_t(rand(dim_x))
 
 # Construct prox-operator
-c    = -ones(dim_x)
-d    = ones(dim_x)
-Proj = Proximal(pa_projection_ab(c,d))
-
-# Construct prox-operator
-g_t = StepSize(0.1,pa_gamma_t(10.0))
+g_t = StepSize(0.1,pa_gamma_t(1.0))
 
 # Run example
-x_0, err_vec = prox_sub_grad(G_t,Proj,g_t,1000,zeros(dim_x))
+x_0, err_vec = entrop_sub_grad(G_t,g_t,500,x_sv)
 
 # Plot behavior of consecutive iterates
 ep  = plot(err_vec,lw = 2,label=false, yaxis = :log)
 
 # Save figure
 # savefig(ep,"diff_of_iterates_smd_ex-1.pdf")
-savefig(ep,"diff_of_iterates_smd_ex-2.pdf")
+# savefig(ep,"diff_of_iterates_smd_ex-2.pdf")
+# savefig(ep,"diff_of_iterates_smd_ex-3.pdf")
+# savefig(ep,"diff_of_iterates_smd_ex-4.pdf")
